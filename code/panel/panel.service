@@ -1,0 +1,12 @@
+[Unit]
+Description=API Protector Panel
+
+[Service]
+User=vagrant
+Group=vagrant
+WorkingDirectory=/app/panel/
+ExecStart=/app/panel/server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,174 @@
+{{define "body"}}
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="fs-2 fw-semibold text-center">{{.Title}}</div>
+                <hr>
+                <div class="tab-content rounded-bottom">
+                    <div class="row">
+                        <div class="col-md-auto"><button class="btn btn-primary mb-3" id="add-denied-tokens"
+                                data-endpoint-id="{{.Data.Endpoint.ID}}" data-coreui-target="#addModal"
+                                data-coreui-toggle="modal">Add New Token</button></div>
+                        <div class="col-md-auto"><button class="btn btn-primary text-white mb-3"
+                                id="import-denied-tokens" data-endpoint-id="{{.Data.Endpoint.ID}}"
+                                data-coreui-target="#importModal" data-coreui-toggle="modal">Import from file</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane active preview overflow-auto" role="tabpanel">
+                        <table id="denied-tokens-table" class="table table-striped border">
+                            <thead>
+                                <tr class="background-green text-white">
+                                    <th>
+                                        <div class="dsc f-weight250">Token</div>
+                                    </th>
+                                    <th class="f-weight250">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Data.DeniedTokens}}
+                                <tr data-id='{{.ID}}'>
+                                    <td>{{.Token}}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary text-white update" data-id="{{.ID}}"
+                                            data-endpoint-id="{{$.Data.Endpoint.ID}}" data-entry-value="{{.Token}}"
+                                            data-coreui-target="#updateModal" data-coreui-toggle="modal">
+                                            <b>Manage</b>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger text-white delete" data-id="{{.ID}}"
+                                            data-endpoint-id="{{$.Data.Endpoint.ID}}"
+                                            data-endpoint-name="{{$.Data.Endpoint.Label}}"
+                                            data-coreui-target="#deleteModal" data-coreui-toggle="modal">
+                                            <b>Remove</b>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add denied tokens -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="/endpoints/{{.Data.Endpoint.ID}}/denied-tokens" class="modal-content" method="POST"
+            enctype="multipart/form-data" id="add-form">
+            <input type="hidden" name="restart" value="0">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Denied Token</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Token:</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-8">
+                        <textarea type="text" class="form-control" name="denied_token" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="add-btn" data-coreui-dismiss="modal" type="submit"
+                    class="btn btn-primary center"><b>Save</b></button>
+                <button id="add-restart-btn" data-coreui-dismiss="modal" type="submit" class="btn btn-primary center"
+                    data-data="restart"><b>Save & Restart</b></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Import as file modal for denied tokens -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="/endpoints/{{.Data.Endpoint.ID}}/denied-tokens/import" class="modal-content" method="POST"
+            enctype="multipart/form-data" id="import-form">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Denied Tokens</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Select Text File (format: .txt)</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-8">
+                        <input type="file" class="form-control sharpedge" name="text_file" accept=".txt" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="import-btn" type="submit" data-coreui-dismiss="modal"
+                    class="btn btn-primary center"><b>Import</b></button>
+                <button id="import-restart-btn" type="submit" data-coreui-dismiss="modal" class="btn btn-primary center"
+                    data-data="restart"><b>Import &
+                        Restart</b></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Update denied tokens -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form action="/" class="modal-content" method="POST" enctype="multipart/form-data" id="update-form">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Denied Token</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="endpoint_id">
+                <input type="hidden" name="entry_id">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Token:</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-8">
+                        <textarea type="text" class="form-control" id="updated-denied-token" name="denied_token"
+                            required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="update-btn" data-coreui-dismiss="modal" type="submit"
+                    class="btn btn-primary center"><b>Save</b></button>
+                <button id="update-restart-btn" data-coreui-dismiss="modal" type="submit" class="btn btn-primary center"
+                    data-data="restart"><b>Save
+                        & Restart</b></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete denied tokens modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form id="delete-form" class="modal-content" action="/" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Denied Token?</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <input type="hidden" name="entry_id">
+                <input type="hidden" name="endpoint_id">
+
+                Are you sure you want to <span class="text-danger"><strong>REMOVE</strong></span> this Denied Token for
+                Endpoint: <span class="text-primary" id="delete-endpoint-name"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Close</button>
+                <button type="submit" data-coreui-dismiss="modal" id="delete-btn"
+                    class="btn btn-danger text-white">REMOVE</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="module" src='{{assetPath "app/denied-tokens.js"}}'></script>
+{{end}}

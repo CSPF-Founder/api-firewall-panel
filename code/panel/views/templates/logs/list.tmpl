@@ -1,0 +1,50 @@
+{{define "body"}}
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="fs-2 fw-semibold text-center">API Protector Logs</div>
+                <hr>
+                <div class="tab-content rounded-bottom">
+                    <div class="tab-pane active preview overflow-auto" role="tabpanel" id="preview-746">
+                        <input type="hidden" name="csrf_token" value="<?php View::securePrint(CSRF::get()) ?>">
+                        <table class="table table-striped border">
+                            <thead>
+                                <tr class="background-green text-white">
+                                    <th>
+                                        <div class="dsc f-weight250">Log file</div>
+                                    </th>
+                                    <th class="f-weight250">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table">
+                                {{range .Data.Log}}
+                                <tr>
+                                    <td>{{.Name}}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary text-white view_log"
+                                            href="/endpoints/{{$.Data.EndpointId}}/logs/view?file={{.Name}}"
+                                            data-endpoint-id="{{$.Data.EndpointId}}" data-file="{{.Name}}">
+                                            <b> View Log</b>
+                                        </a>
+                                        <form action="/endpoints/{{$.Data.EndpointId}}/logs/download" method="POST"
+                                            class="d-inline-block">
+                                            <input type="hidden" name="file" value="{{.Name}}">
+                                            <button class="btn btn-sm btn-primary text-white" type="submit"><b>
+                                                    Download</b></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+
+{{end}}

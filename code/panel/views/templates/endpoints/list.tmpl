@@ -1,0 +1,153 @@
+{{define "body"}}
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="fs-2 fw-semibold text-center">{{.Title}}</div>
+                <hr>
+                <div class="tab-content rounded-bottom">
+                    <div class="tab-pane active preview overflow-auto" role="tabpanel" id="preview-746">
+                        <table class="table table-striped border" id="endpoint-table">
+                            <thead>
+                                <tr class="background-green text-white">
+                                    <th>
+                                        <div class="dsc f-weight250">Label</div>
+                                    </th>
+                                    <th>
+                                        <div class="dsc f-weight250">Mode</div>
+                                    </th>
+                                    <th>
+                                        <div class="dsc f-weight250">Listening Port</div>
+                                    </th>
+                                    <th>
+                                        <div class="dsc f-weight250">Status</div>
+                                    </th>
+                                    <th>
+                                        <div class="dsc f-weight250">Created At</div>
+                                    </th>
+                                    <th class="f-weight250">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Data}}
+                                <tr data-id='{{.ID}}'>
+                                    <td>{{.Label}}</td>
+                                    <td>{{.RequestMode}}</td>
+                                    <td>{{.ListeningPort}}</td>
+                                    <td>{{.StatusText}}</td>
+                                    <td>{{.CreatedAtString}}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary text-white" href="/endpoints/{{.ID}}/logs">
+                                            <b> View Logs</b>
+                                        </a>
+
+                                        <button class="btn btn-sm btn-primary text-white change_mode" type="button"
+                                            data-id='{{.ID}}' data-request='{{.RequestMode}}'
+                                            data-coreui-target="#requestUpdateModal" data-coreui-toggle="modal">
+                                            <b> Change Mode</b>
+                                        </button>
+
+
+                                        <button class="btn btn-sm btn-warning text-white" type="button"
+                                            data-id='{{.ID}}' data-name='{{.Label}}' data-coreui-target="#restartModal"
+                                            data-coreui-toggle="modal">
+                                            <b>Restart</b>
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger text-white delete-endpoint" type="button"
+                                            data-id='{{.ID}}' data-name='{{.Label}}' data-coreui-target="#deleteModal"
+                                            data-coreui-toggle="modal">
+                                            <b> Delete</b>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Mode update Modal -->
+<div class="modal fade" id="requestUpdateModal" tabindex="-1" role="dialog" aria-labelledby="requestUpdateModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" method="POST" id="update-request-mode-form">
+            <input type="hidden" name="endpoint_id">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Request Mode</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Request Mode</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-6">
+                        <select class="form-control" name="request_mode" required>
+                            <option value="monitor">monitor</option>
+                            <option value="block">block</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Close</button>
+                <button id="update-request-mode-btn" data-coreui-dismiss="modal" type="submit"
+                    class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Restart Modal -->
+<div class="modal fade" id="restartModal" tabindex="-1" role="dialog" aria-labelledby="restartModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="restart-form" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title">Restart Endpoint?</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <input type="hidden" name="endpoint_id">
+                Are you sure you want to <span class="text-danger"><strong>Restart</strong></span> the endpoint: <span
+                    class="text-primary" id="restart-endpoint-name"></span>?<br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Close</button>
+                <button id="restart-endpoint-btn" type="submit" data-coreui-dismiss="modal"
+                    class="btn btn-danger text-white">Restart</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete endpoint modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="delete-endpoint-form" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Endpoint?</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <input type="hidden" name="endpoint_id">
+                Are you sure you want to <span class="text-danger"><strong>DELETE</strong></span> endpoint: <span
+                    class="text-primary" id="delete-endpoint-name"></span>?<br> This step is irreversible!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Close</button>
+                <button id="delete-endpoint-btn" type="submit" data-coreui-dismiss="modal"
+                    class="btn btn-danger text-white">DELETE</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="module" src='{{assetPath "app/endpoints.js"}}'></script>
+{{end}}

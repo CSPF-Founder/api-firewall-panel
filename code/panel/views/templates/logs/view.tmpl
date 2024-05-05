@@ -1,0 +1,46 @@
+{{define "body"}}
+<style>
+    .log-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #f7f7f7;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 14px;
+        line-height: 1.5;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        overflow: auto;
+        max-height: 500px;
+    }
+</style>
+
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="log-container">
+                    <h1>Firewall Logs</h1>
+                    <br>
+                    <pre id="log-output">{{.Data}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{end}}
+{{define "scripts"}}
+
+{{end}}

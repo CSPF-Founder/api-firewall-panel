@@ -1,0 +1,168 @@
+{{define "body"}}
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="fs-2 fw-semibold text-center">{{.Title}}</div>
+                <p class="fs-7 fw-semibold text-danger text-center">*Make sure the input to the {{.Title}} is not
+                    manipulated by the client.</p>
+                <hr>
+                <div class="tab-content rounded-bottom">
+                    <div class="tab-pane active preview overflow-auto" role="tabpanel" id="preview-746">
+                        <table class="table table-striped border" id="endpoint-config-table">
+                            <thead>
+                                <tr class="background-green text-white">
+                                    <th>
+                                        <div class="dsc f-weight250">Label</div>
+                                    </th>
+                                    <th>
+                                        <div class="dsc f-weight250">{{.Title}}</div>
+                                    </th>
+                                    <th class="f-weight250">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range .Data.Endpoints}}
+                                <tr data-id='{{.ID}}'>
+                                    <td>{{.Label}}</td>
+                                    <td>
+                                        {{if .Config.ConfigValue}}
+                                        {{.Config.ConfigValue}}
+                                        {{else}}
+                                        --
+                                        {{end}}
+                                    </td>
+                                    <td>
+                                        {{if .Config.ConfigValue}}
+                                        <button class="btn btn-sm btn-primary text-white update_header" type="button"
+                                            data-id='{{.ID}}' data-config-value='{{.Config.ConfigValue}}'
+                                            data-custom="{{.Config.CustomValue}}"
+                                            data-coreui-target="#updateConfigModal" data-coreui-toggle="modal">
+                                            <b> Manage Token</b>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger text-white delete" type="button"
+                                            data-id='{{.ID}}' data-name='{{.Label}}'
+                                            data-coreui-target="#deleteConfigModal" data-coreui-toggle="modal">
+                                            <b> Remove</b>
+                                        </button>
+                                        {{else}}
+                                        <a class="btn btn-sm btn-primary text-white add_header" data-id='{{.ID}}'
+                                            data-coreui-target="#addConfigModal" data-coreui-toggle="modal">
+                                            <b> Add Token Header</b>
+                                        </a>
+                                        {{end}}
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Mode add Modal -->
+<div class="modal fade" id="addConfigModal" tabindex="-1" role="dialog" aria-labelledby="addConfigModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" method="POST" id="add-form">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Token Header</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="endpoint_id">
+                <input type="hidden" name="config_key" value="{{.Data.HeaderType}}">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Token Header</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-6">
+                        <select class="form-control" name="config_value" required>
+                            {{range .Data.Headers}}
+                            <option value="{{.}}">{{.}}</option>
+                            {{end}}
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="text" class="form-control mt-2 d-none"
+                            placeholder="Custom Header Value (For Ex: X-Auth)" name="custom_value">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="add-btn" data-coreui-dismiss="modal" type="submit" class="btn btn-primary">Save</button>
+                <button id="add-restart-btn" data-coreui-dismiss="modal" type="submit" class="btn btn-primary"
+                    data-data="restart">Save &
+                    Restart</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Request Mode update Modal -->
+<div class="modal fade" id="updateConfigModal" tabindex="-1" role="dialog" aria-labelledby="updateConfigModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" action="/" method="POST" id="update-form">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Token Header</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="endpoint_id">
+                <input type="hidden" name="config_key" value="{{.Data.HeaderType}}">
+                <div class="row pt-4">
+                    <div class="col-lg-4 col-sm-4">
+                        <label>Token Header</label>
+                    </div>
+                    <div class="col-lg-8 col-sm-6">
+                        <select class="form-control" name="config_value" required>
+                            {{range .Data.Headers}}
+                            <option value="{{.}}">{{.}}</option>
+                            {{end}}
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="text" class="form-control mt-2 d-none"
+                            placeholder="Custom Header Value (For Ex: X-Auth)" name="custom_value">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-coreui-dismiss="modal" id="update-btn" type="submit" class="btn btn-primary">Save</button>
+                <button data-coreui-dismiss="modal" id="update-restart-btn" type="submit" class="btn btn-primary"
+                    data-data="restart">Save &
+                    Restart</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete endpoint modal -->
+<div class="modal fade" id="deleteConfigModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfigModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="delete-form" method="POST">
+            <input type="hidden" name="endpoint_id">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Token Header?</h5>
+                <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <input type="hidden" name="config_key" value="{{.Data.HeaderType}}">
+                Are you sure you want to <span class="text-danger"><strong>DELETE</strong></span> Token Header for
+                Endpoint: <span class="text-primary" id="delete-endpoint-name"></span>?
+            </div>
+            <div class="modal-footer">
+                <button data-coreui-dismiss="modal" type="button" class="btn btn-secondary">Close</button>
+                <button data-coreui-dismiss="modal" id="delete-btn" type="submit"
+                    class="btn btn-danger text-white">DELETE</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="module" src='{{assetPath "app/endpoints-config.js"}}'></script>
+{{end}}

@@ -1,0 +1,16 @@
+services:
+
+  mariadb:
+    image: mariadb:10.11.3
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: '[ROOT_PASS_TO_REPLACE]'
+      MARIADB_USER: 'api_firewall'
+      MARIADB_PASSWORD: '[PASSWORD_TO_REPLACE]'
+      MARIADB_DATABASE: 'api_protector'
+    volumes:
+      - ./volumes/db/mariadb:/var/lib/mysql
+    ports:
+      - '127.0.0.1:3306:3306'
+ 

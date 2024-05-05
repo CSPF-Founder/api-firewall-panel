@@ -1,0 +1,73 @@
+{{define "body"}}
+<div class="row pr-3">
+    <div class="col-12 p-0 ">
+        <div class="scroller card mb-4 col-sm-9 col-lg-12 table-wrapper ml-0 p-0 leftPadding-10">
+            <div class="direction-r pr-3 card-body">
+                <div class="fs-2 fw-semibold text-center">Edit API Protector - {{.Data.Label}}</div>
+                <hr>
+                <div class="tab-content rounded-bottom">
+                    <div class="tab-pane p-3 active preview" role="tabpanel">
+                        <form action="/endpoints/{{.Data.ID}}" id="edit-endpoint-form" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="row pt-4">
+                                <div class="col-lg-2 col-sm-0"> </div>
+                                <div class="col-lg-2 col-sm-4">
+                                    <label>Select OpenAPI YAML File</label>
+                                </div>
+                                <div class="col-lg-6 col-sm-6">
+                                    <input type="file" class="form-control sharpedge" name="yaml_file"
+                                        accept=".yml, .yaml">
+                                </div>
+                                <div class="col-lg-2 col-sm-2"> </div>
+                            </div>
+
+                            <div class="row pt-4">
+                                <div class="col-lg-2 col-sm-0"> </div>
+                                <div class="col-lg-2 col-sm-4">
+                                    <label>Target API URL</label>
+                                </div>
+                                <div class="col-lg-6 col-sm-6">
+                                    <input type="text" value="{{.Data.ApiUrl}}" id="api-url"
+                                        placeholder="Enter Target Api Url" class="form-control sharpedge" name="api_url"
+                                        required>
+                                </div>
+                                <div class="col-lg-2 col-sm-2"> </div>
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col-lg-2 col-sm-0"> </div>
+                                <div class="col-lg-2 col-sm-4">
+                                    <label>Request Mode</label>
+                                </div>
+                                <div class="col-lg-6 col-sm-6">
+                                    <select class="form-control" name="request_mode" id="request-mode" required>
+                                        <option value="monitor" {{if eq .Data.RequestMode "monitor" }} selected {{end}}>
+                                            monitor</option>
+                                        <option value="block" {{if eq .Data.RequestMode "block" }} selected {{end}}>
+                                            block</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-sm-2"> </div>
+                            </div>
+                            <div class="http_headers">
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col-lg-4 col-sm-4"> </div>
+                                <div class="col-lg-4 col-sm-4">
+                                    <div class=" ">
+                                        <button id="edit-endpoint-btn" type="submit"
+                                            class="btn btn-primary center"><b>Update</b></button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-4"> </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+{{define "scripts"}}
+<script type="module" src='{{assetPath "app/endpoints.js"}}'></script>
+{{end}}
