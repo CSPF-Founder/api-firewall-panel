@@ -20,7 +20,7 @@ Note: More firewalls/traffic will require more RAM and CPU. Please adjust the Va
 
 Download this repository via 
 
-`git clone https://github.com/CSPF-Founder/api-firewall-panel.git`
+`git clone https://github.com/CSPF-Founder/api-protector-with-controller-and-panel.git`
 
 Or you can download it as a zip file by clicking on `Code` in the top right and clicking `Download zip`.
 
